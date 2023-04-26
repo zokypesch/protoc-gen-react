@@ -1,6 +1,16 @@
 # install plugins
 go install .
 
+# install grpc-gateway
+```
+cd $(go env GOPATH)/src && \
+mkdir -p github.com/grpc-ecosystem && \
+git clone git@github.com:grpc-ecosystem/grpc-gateway.git && \
+cd grpc-gateway && \
+git fetch origin && \
+git checkout v2.2.0
+```
+
 # show after installation
 ls $GOPATH/bin/protoc-gen-react
 
