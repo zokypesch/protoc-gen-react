@@ -1,0 +1,211 @@
+syntax = "proto3";
+
+option go_package = "gitlab.com/prakerja/course-search/grpc/pb/coursesearch";
+package coursesearch;
+
+import "google/api/annotations.proto";
+import "github.com/zokypesch/proto-lib/proto/options.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service coursesearch {
+  rpc GetCourses(GetCoursesRequest) returns(GetCoursesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetCoursesAggregate(GetCoursesRequest) returns(GetCoursesAggregateResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/aggregate"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetFilterOptions(google.protobuf.Empty) returns(GetFilterOptionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/filters"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetAutocomplete(GetAutocompleteRequest) returns(GetAutocompleteResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/suggest"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetList(GetListRequest) returns(GetCoursesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/list"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetCourseDetail(GetCourseDetailRequest) returns(GetCourseDetailResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/detail/{id}"
+    };
+    option(httpMode) = "get";
+  };
+
+  rpc GetCourseRating(GetCourseRatingRequest) returns(GetCourseRatingResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/course-search/course/rating/{course_id}"
+    };
+    option(httpMode) = "get";
+  };
+}
+
+message Company {
+  int64 id = 1 [json_name = "id"];
+  string name = 2 [json_name = "name"];
+  string logo = 3 [json_name = "logo"];
+  string url = 4 [json_name = "url"];
+}
+
+message CoursePlatform {
+  int64 id = 1 [json_name = "id"];
+  Company company = 2 [json_name = "company"];
+  string url = 3 [json_name = "url"];
+  int64 status = 4 [json_name = "status"];
+}
+
+message Course {
+  int64 id = 1 [json_name="id"];
+  string name = 2 [json_name="name"];
+  string image_url = 3 [json_name="image_url"];
+  int64 amount = 4 [json_name="amount"];
+  float rating = 5 [json_name="rating"];
+  int64 total_rating = 6 [json_name="total_rating"];
+  int64 duration = 7 [json_name="duration"];
+  string category = 8 [json_name="category"];
+  string level = 9 [json_name="level"];
+  Company lp = 10 [json_name="lp"];
+  repeated CoursePlatform platforms = 11 [json_name="platforms"];
+}
+
+message GetCoursesRequest {
+  string q = 1 [json_name="q"];
+  int64 page = 2 [json_name="page"];
+  int64 limit = 3 [json_name="limit"];
+  repeated string learning_method = 4 [json_name="learning_method"];
+  repeated int64 level = 5 [json_name="level"];
+  repeated int64 categories = 6 [json_name="categories"];
+  repeated int64 duration = 7 [json_name="duration"];
+  float rating = 8 [json_name="rating"];
+  int64 amount_gte = 9 [json_name="amount_gte"];
+  int64 amount_lte = 10 [json_name="amount_lte"];
+  repeated int64 ids = 11 [json_name="ids"];
+  string order_type = 12 [json_name="order_type"];
+  int64 popular_period = 13 [json_name="popular_period"];
+  repeated string tags = 14 [json_name="tags"];
+  int64 more_like_this_id = 15 [json_name="more_like_this_id"];
+  repeated int64 lp_ids = 16 [json_name="lp_ids"];
+  repeated int64 dp_ids = 17 [json_name="dp_ids"];
+  int64 education_min = 18 [json_name="education_min"];
+  int64 education_max = 19 [json_name="education_max"];
+  int64 age_min = 20 [json_name="age_min"];
+  int64 age_max = 21 [json_name="age_max"];
+  repeated int64 province_id = 22 [json_name="province_id"];
+}
+
+message GetCoursesResponse {
+  repeated Course items = 1 [json_name="items"];
+  int64 page = 2 [json_name="page"];
+  int64 limit = 3 [json_name="limit"];
+  int64 total = 4 [json_name="total"];
+}
+
+message Option {
+  string value = 1 [json_name="value"];
+  string label = 2 [json_name="label"];
+}
+
+message GetFilterOptionsResponse {
+  repeated Option method = 1 [json_name = "method"];
+  repeated Option level = 2 [json_name = "level"];
+  repeated Option durations = 3 [json_name = "durations"];
+  repeated Option rating = 4 [json_name = "rating"];
+  repeated Option category = 5 [json_name = "category"];
+  repeated Option educations = 6 [json_name = "educations"];
+}
+
+message GetAutocompleteRequest {
+  string q = 1 [json_name = "q"];
+  int64 page = 2 [json_name="page"];
+  int64 limit = 3 [json_name="limit"];
+}
+
+message GetAutocompleteResponse {
+  repeated string items = 1 [json_name="items"];
+  int64 page = 2 [json_name="page"];
+  int64 limit = 3 [json_name="limit"];
+  int64 total = 4 [json_name="total"];
+}
+
+message GetListRequest {
+  string type = 1 [json_name = "type"];
+  int64 page = 2 [json_name="page"];
+  int64 limit = 3 [json_name="limit"];
+}
+
+message GetCourseDetailRequest {
+  int64 id = 1 [json_name = "id"];
+}
+
+message GetCourseRatingRequest {
+  int64 course_id = 1 [json_name = "course_id"];
+}
+
+message GetCourseDetailResponse {
+  int64 id = 1 [json_name="id"];
+  string name = 2 [json_name="name"];
+  string image_url = 3 [json_name="image_url"];
+  int64 amount = 4 [json_name="amount"];
+  float rating = 5 [json_name="rating"];
+  int64 total_rating = 6 [json_name="total_rating"];
+  Company lembaga_pelatihan = 7 [json_name="lembaga_pelatihan"];
+  string category = 8 [json_name="category"];
+  int64 duration = 9 [json_name="duration"];
+  string mentor_name = 10 [json_name="mentor_name"];
+  string level = 11 [json_name="level"];
+  repeated CoursePlatform platforms = 12 [json_name="platforms"];
+  repeated CourseRequirement course_requirement = 13 [json_name="course_requirement"];
+  string learning_method = 14 [json_name="learning_method"];
+  repeated int32 rating_group = 15 [json_name="rating_group"];
+  string description = 16 [json_name="description"];
+  string type = 17 [json_name="type"];
+  repeated Instructor instructor = 18 [json_name="instructor"];
+}
+
+message ProvinceCount {
+  int64 id = 1 [json_name="id"];
+  int64 count = 2 [json_name="count"];
+}
+
+message GetCoursesAggregateResponse {
+  repeated ProvinceCount items = 1 [json_name="items"];
+}
+
+message GetCourseRatingResponse {
+  float rating = 1 [json_name="rating"];
+  int64 total_rating = 2 [json_name="total_rating"];
+}
+
+message CourseRequirement {
+  string key = 1;
+  string min = 2;
+  string max = 3;
+}
+
+message Instructor {
+  int64 id = 1 [json_name = "id"];
+  string name = 2 [json_name = "name"];
+  string photo = 3 [json_name = "photo"];
+  string type = 4 [json_name = "type"];
+  string total_students = 5 [json_name = "total_students"];
+  string total_courses = 6 [json_name = "total_courses"];
+}

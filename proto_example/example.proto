@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+// DO_NOT_GENERATE
+// Edit By: Maulana
+
+option go_package = "gitlab.com/prakerja/zolos-api/grpc/pb/zolos";
+package zolos;
+
+import "google/api/annotations.proto";
+import "github.com/zokypesch/proto-lib/proto/options.proto";
+import "google/protobuf/empty.proto";
+
+
+service zolos {
+    rpc GrantPermission(GrantPermissionRequest) returns(GrantPermissionResponse) {
+		option (google.api.http) = {
+			get: "/api/v1/face-capture/grant"
+		};
+		option(httpMode) = "get";
+	};
+
+	rpc CheckResult(GrantPermissionRequest) returns(GrantPermissionResponse) {
+		option (google.api.http) = {
+			post: "/api/v1/face-capture/check",
+			body: "*"
+		};
+		option(httpMode) = "post";
+	};
+
+	rpc GetAllTransHistoryByUser(google.protobuf.Empty) returns(GrantPermissionRequest) {
+		option (google.api.http) = {
+			get: "/api/v1/face-capture/history"
+		};
+		option(httpMode) = "get";
+	};
+}
+
+message GrantPermissionRequest {
+    int64 user_id = 1 [json_name="user_id"];
+	repeated int64 items = 2 [json_name = "items"]; 
+	GrantPermissionResponse data = 3 [json_name="data"];
+	repeated GrantPermissionResponse data_test = 4 [json_name="data_test"];
+}
+
+message GrantPermissionResponse {
+    int64 grant_status = 1 [json_name="grantStatus"];
+}
